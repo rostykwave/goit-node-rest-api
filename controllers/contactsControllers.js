@@ -1,9 +1,5 @@
 import * as contactsService from "../services/contactsServices.js";
 import HttpError from "../helpers/HttpError.js";
-import {
-  createContactSchema,
-  updateContactSchema,
-} from "../schemas/contactsSchemas.js";
 
 import isEmptyObject from "../helpers/objectHelpers.js";
 
@@ -50,10 +46,6 @@ export const deleteContact = async (req, res, next) => {
 
 export const createContact = async (req, res, next) => {
   try {
-    const { error } = createContactSchema.validate(req.body);
-    if (error) {
-      throw HttpError(400, error.message);
-    }
     const result = await contactsService.addContact(req.body);
 
     res.status(201).json(result);
@@ -66,10 +58,6 @@ export const updateContact = async (req, res, next) => {
   try {
     if (isEmptyObject(req.body)) {
       throw HttpError(400, "Body must have at least one field");
-    }
-    const { error } = updateContactSchema.validate(req.body);
-    if (error) {
-      throw HttpError(400, error.message);
     }
 
     const { id } = req.params;
