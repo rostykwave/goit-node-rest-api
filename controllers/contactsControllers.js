@@ -26,7 +26,21 @@ export const getOneContact = async (req, res, next) => {
   }
 };
 
-export const deleteContact = (req, res) => {};
+export const deleteContact = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    const result = await contactsService.removeContact(id);
+    if (!result) {
+      throw HttpError(404, `Contact with id=${id} not found`);
+    }
+
+    res.json({
+      message: "Contact deleted successfuly",
+    });
+  } catch (error) {
+    next(error);
+  }
+};
 
 export const createContact = (req, res) => {};
 
