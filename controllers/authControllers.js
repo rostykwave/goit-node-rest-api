@@ -49,7 +49,18 @@ const login = async (req, res) => {
   });
 };
 
+const logout = async (req, res) => {
+  const { id } = req.user;
+  const user = await authServices.updateUser({ id }, { token: "" });
+  if (!user) {
+    throw HttpError(401, "Not authorized");
+  }
+
+  res.sendStatus(204);
+};
+
 export default {
   register: ctrlWrapper(register),
   login: ctrlWrapper(login),
+  logout: ctrlWrapper(logout),
 };
