@@ -31,11 +31,14 @@ const login = async (req, res) => {
     throw HttpError(401, "Email or password is wrong");
   }
 
+  const { id } = user;
+
   const payload = {
-    id: user.id,
+    id,
   };
 
   const token = jwt.sign(payload, JWT_SECRET, { expiresIn: "24h" });
+  await authServices.updateUser({ id }, { token });
 
   res.json({
     token,
