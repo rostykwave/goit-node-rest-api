@@ -59,8 +59,22 @@ const logout = async (req, res) => {
   res.sendStatus(204);
 };
 
+const getCurrent = async (req, res) => {
+  const { id } = req.user;
+  const user = await authServices.findUser({ id });
+  if (!user) {
+    throw HttpError(401, "Not authorized");
+  }
+
+  res.json({
+    email: user.email,
+    subscription: "starter",
+  });
+};
+
 export default {
   register: ctrlWrapper(register),
   login: ctrlWrapper(login),
   logout: ctrlWrapper(logout),
+  getCurrent: ctrlWrapper(getCurrent),
 };
