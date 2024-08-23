@@ -1,6 +1,6 @@
 import bcrypt from "bcrypt";
-
 import User from "../db/models/User.js";
+import gravatar from "gravatar";
 
 export const findUser = (query) =>
   User.findOne({
@@ -21,7 +21,12 @@ export const register = async (data) => {
   try {
     const { password } = data;
     const hashPassword = await bcrypt.hash(password, 10);
-    const newUser = await User.create({ ...data, password: hashPassword });
+    const avatarURL = gravatar.url(data.email);
+    const newUser = await User.create({
+      ...data,
+      password: hashPassword,
+      avatarURL,
+    });
     return newUser;
   } catch (error) {
     if (error?.parent?.code === "23505") {
