@@ -1,12 +1,12 @@
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
-
+import path from "node:path";
+import * as fs from "node:fs/promises";
 import * as authServices from "../services/authServices.js";
-
 import ctrlWrapper from "../decorators/ctrlWrapper.js";
-
 import HttpError from "../helpers/HttpError.js";
 
+const avatarsPath = path.resolve("public", "avatars");
 const { JWT_SECRET } = process.env;
 
 const register = async (req, res) => {
@@ -72,9 +72,26 @@ const getCurrent = async (req, res) => {
   });
 };
 
+const updateAvatar = async (req, res) => {
+  const { id } = req.user;
+
+  const { path: oldPath, filename } = req.file;
+  const newPath = path.join(avatarsPath, filename);
+  await fs.rename(oldPath, newPath);
+  const avatarURL = path.join("avatars", filename);
+
+  const result = await authServices.updateUser({ id }, { avatarURL });
+  if (!result) {
+    throw HttpError(404, `User with id=${id} not found`);
+  }
+
+  res.json({ avatarURL: result.avatarURL });
+};
+
 export default {
   register: ctrlWrapper(register),
   login: ctrlWrapper(login),
   logout: ctrlWrapper(logout),
   getCurrent: ctrlWrapper(getCurrent),
+  updateAvatar: ctrlWrapper(updateAvatar),
 };
