@@ -75,6 +75,10 @@ const getCurrent = async (req, res) => {
 const updateAvatar = async (req, res) => {
   const { id } = req.user;
 
+  if (!req.file) {
+    throw HttpError(400, "Body must have at least one file");
+  }
+
   const { path: oldPath, filename } = req.file;
   const newPath = path.join(avatarsPath, filename);
   await fs.rename(oldPath, newPath);
