@@ -20,6 +20,26 @@ const register = async (req, res) => {
   });
 };
 
+const verify = async (req, res) => {
+  const { verificationToken } = req.params;
+  const user = await authServices.findUser({ verificationToken });
+  if (!user) {
+    throw HttpError(404, "User not found");
+  }
+
+  await authServices.updateUser(
+    { verificationToken },
+    {
+      verify: true,
+      verificationToken: null,
+    }
+  );
+
+  res.json({
+    message: "Verification successful",
+  });
+};
+
 const login = async (req, res) => {
   const { email, password } = req.body;
   const user = await authServices.findUser({ email });
@@ -94,6 +114,7 @@ const updateAvatar = async (req, res) => {
 
 export default {
   register: ctrlWrapper(register),
+  verify: ctrlWrapper(verify),
   login: ctrlWrapper(login),
   logout: ctrlWrapper(logout),
   getCurrent: ctrlWrapper(getCurrent),

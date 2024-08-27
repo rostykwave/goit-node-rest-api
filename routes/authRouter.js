@@ -10,6 +10,7 @@ const registerMiddleware = validateBody(authRegisterSchema);
 const authRouter = Router();
 
 authRouter.post("/register", registerMiddleware, authControllers.register);
+authRouter.post("/verify/:verificationToken", authControllers.verify);
 authRouter.post("/login", registerMiddleware, authControllers.login);
 authRouter.post("/logout", authenticate, authControllers.logout);
 authRouter.get("/current", authenticate, authControllers.getCurrent);
