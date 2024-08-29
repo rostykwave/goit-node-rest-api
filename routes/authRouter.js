@@ -11,7 +11,7 @@ const verifyEmailMiddleware = validateBody(authEmailSchema);
 const authRouter = Router();
 
 authRouter.post("/register", registerMiddleware, authControllers.register);
-authRouter.post("/verify/:verificationToken", authControllers.verify);
+authRouter.get("/verify/:verificationToken", authControllers.verify);
 authRouter.post("/verify", verifyEmailMiddleware, authControllers.resendVerify);
 authRouter.post("/login", registerMiddleware, authControllers.login);
 authRouter.post("/logout", authenticate, authControllers.logout);
